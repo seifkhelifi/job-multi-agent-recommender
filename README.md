@@ -33,7 +33,7 @@ This job posting matches your query, and we hope you find it interesting. Please
 
 ### 🌐 **Agent Example with Google Search (Tavily API)**
 
-*[See the contributing guide](AGENT.md)
+*[See the agent.md file](AGENT.md)
 .*
 
 ---
