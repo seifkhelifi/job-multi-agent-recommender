@@ -1,0 +1,12 @@
+langchain_core
+langgraph 
+langchain_community 
+langchain_groq 
+langchain_experimental
+torch
+sentence-transformers
+python-jobspy
+pandas
+transformers 
+sentence-transformers
+tqdm
