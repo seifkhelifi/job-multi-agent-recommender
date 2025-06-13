@@ -87,9 +87,6 @@ This job posting matches your query, and we hope you find it interesting. Please
 
 The main entry point for the application is `main.py`. This file initializes the agents, sets up the LangGraph workflow, and starts the Flask server.
 
-## Usage
-
-Provide examples of how to interact with the API or use the application. Include sample requests and expected responses.
 
 ## Contributing
 
