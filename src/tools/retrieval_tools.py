@@ -1,10 +1,18 @@
 from langchain_core.tools import tool
-from RAG_job_posts_engine.rag_pipeline import query_job_posts
+import requests
+
+# Define FastAPI endpoint
+API_URL = (
+    "http://localhost:8000/query"  # adjust host/port from your FastAPI server config
+)
 
 
-# Define tools for the retrieval agent
 @tool
 def search_jobs(query: str) -> str:
     """Search for job listings based on provided criteria such as role, location, experience level, etc."""
-    # Mock response - in a real system, this would connect to job listing APIs
-    return query_job_posts()
+    try:
+        response = requests.post(API_URL, json={"query": query}, timeout=30)
+        response.raise_for_status()
+        return response.json().get("response", "No response from API")
+    except Exception as e:
+        return f"Error while querying job API: {str(e)}"
