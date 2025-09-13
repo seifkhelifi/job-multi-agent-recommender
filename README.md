@@ -1,92 +1,96 @@
-# AI Job Agent - Multi-Agent System
+# RAG-Based Job Matching System
 
-This project implements an AI Job Agent using a multi-agent approach. It leverages LangChain and LangGraph to create a system that can understand user job search requests, retrieve relevant job using RAg pipeline or web search and resume information, and provide career advice.
-
-## Architecture
-
-The system follows a multi-agent architecture as depicted in the image:
-
-![alt text](architecture.png)
-
-* **Supervisor Agent (Supervisor):** This agent acts as the orchestrator. It interprets user requests, autonomously asks for further information if needed, breaks down the request into tasks, and directs the flow between the Retrieval Agent and Resume Agent.
-* **Retrieval Agent:** Responsible for retrieving relevant job listings and market insights using a RAG pipeline backed by a vector database (Weaviate). If no relevant data is found internally, it falls back to web search via the Tavily API.   
-* **Resume Agent:** This agent provides career advice on tailoring resumes and can update resumes based on job market trends foud by the Retrival agent.
-
-
-## Examples
-
-### 🔍 **RAG Example**
-
-**Query:**
-
-> AI/ML software engineer in California requiring only a Bachelor’s degree in Computer Science
-> **Filters:** `[]`
-
-**Result:**
-We found an exciting opportunity for an AI/ML Software Engineer position in California that requires only a Bachelor's degree in Computer Science. Here it is:
-
-1. Snowflake is looking for a Software Engineer - AI/ML Frontend to join their team in San Mateo, CA. The role requires a Bachelor's degree in Computer Science, Engineering, or a related field, and 2 years of experience in software development, product engineering, or a related role. The ideal candidate will have proficiency in JavaScript/TypeScript and another language such as Python/Go/Java, as well as experience with React web development library. [Job Description](https://www.indeed.com/viewjob?jk=1a632c9fe83827ce)
-
-This job posting matches your query, and we hope you find it interesting. Please note that the job requirements and details can be found on the provided job URL.
+This repository contains a **Retrieval-Augmented Generation (RAG)** pipeline designed for matching user queries to relevant job postings using **semantic search**. The system leverages **LlamaIndex** to retrieve job offers from a structured dataset and generate relevant responses.
 
 ---
 
-### 🌐 **Agent Example with Google Search (Tavily API)**
+## Features
 
-*[See the agent.md file](AGENT.md)
-.*
-
----
-
-
-## Technology Stack
-
-| Category           | Tools & Libraries                                                    |
-| ------------------ | -------------------------------------------------------------------- |
-| LLM Framework      | LangChain Core, LangGraph                                            |
-| Integrations       | LangChain Community, LangChain Groq, LangChain Experimental          |
-| Search & Retrieval | Weaviate (vector DB), Tavily API (web search), Sentence Transformers |
-| Job Scraping       | Python Jobspy                                                        |
-| Web Server         | Flask                                                                |
-| ML/AI              | Torch                                                                |
-| Data Handling      | Pandas                                                               |
+- **Semantic Job Matching**: Finds the most relevant job postings based on natural language queries.
+- **RAG Pipeline**: Combines retrieval of job postings with generative responses for detailed results.
+- **Evaluation Metrics**: Provides detailed evaluation of both retrieval and generation performance.
+- **Advanced Techniques Applied**:
+  - **Auto-retrieval**: Infers metadata filters directly from the user query.
+  - **Hybrid search**: Combines dense vector search with metadata filtering.
+  - **Re-ranking**: Improves the relevance of retrieved results.
 
 ---
 
-## Getting Started
+## Dataset Structure
 
-1.  **Clone the repository:**
+The dataset is expected to be a CSV containing job postings with at least the following fields:
 
-    ```bash
-    git clone <repository_url>
-    cd job-agent
-    ```
+```text
+- title: Job title
+- company: Company name
+- description: Job description
+- location: Job location (optional)
+- skills: Required skills (optional)
+````
 
-2.  **Install dependencies:**
+Each document is indexed with metadata for efficient semantic search.
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+---
 
-3.  **Set up environment variables:**
+## Evaluation Report
 
-    * `WEAVIATE_URL`: URL of your Weaviate instance.
-    * `WEAVIATE_API_KEY`: API key for your Weaviate instance (if applicable).
-    * `GROQ_API_KEY`: API key for Groq platform (if using Groq).
-    * Other necessary API keys or configurations.
+The system was evaluated using **18 sample queries**. Metrics were computed for both retrieval and generation components.
 
-4.  **Run the application:**
+### Retrieval Metrics
 
-    ```bash
-    python main.py
-    ```
+| Metric       | Score |
+| ------------ | ----- |
+| Recall\@5    | 0.722 |
+| Precision\@5 | 0.611 |
+| MRR          | 0.722 |
 
-    The application will start a Flask server, and you can interact with the AI Job Agent through the API endpoints.
+### Generation Metrics
 
-## Entry Point
+| Metric                    | Score |
+| ------------------------- | ----- |
+| Faithfulness (LlamaIndex) | 0.556 |
 
-The main entry point for the application is `main.py`. This file initializes the agents, sets up the LangGraph workflow, and starts the Flask server.
+These metrics indicate strong retrieval performance, with room for improvement in generation faithfulness.
 
+---
+
+## Usage
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Load your dataset and initialize the RAG pipeline:
+
+```python
+from rag_pipeline import JobRAGPipeline
+
+pipeline = JobRAGPipeline("jobs_dataset.csv")
+```
+
+3. Query the system:
+
+```python
+results = pipeline.query("Software engineer with Python experience in sales")
+for job in results:
+    print(job['title'], job['company'])
+```
+
+---
+
+## Evaluation Framework
+
+The system includes a dedicated evaluation module:
+
+* **Query Generation**: Generates 1–3 realistic user queries per job posting for testing.
+* **Retrieval Evaluation**: Computes Recall\@k, Precision\@k, and MRR.
+* **Generation Evaluation**: Uses LlamaIndex `FaithfulnessEvaluator` to score generated outputs.
+
+This allows for continuous improvement of both the retrieval and generation components.
+
+---
 
 ## Contributing
 
@@ -103,6 +107,3 @@ khelifiseif1@gmail.com
 
 
 
-
-
-* 
